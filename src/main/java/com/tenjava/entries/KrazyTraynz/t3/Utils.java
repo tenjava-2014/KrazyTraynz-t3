@@ -1,9 +1,12 @@
 package com.tenjava.entries.KrazyTraynz.t3;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -92,25 +95,90 @@ public class Utils {
         for(Location l : blockls){
             File f = new File("plugins/Altars/Gods/" + god + "/Blocks.txt");
             try{
-                FileWriter fr = new FileWriter(f);
-                fr.write(l.getWorld().getName() + "," + l.getX() + "," + l.getY() + "," + l.getZ());
-                fr.close();
+                BufferedWriter br = new BufferedWriter(new FileWriter(f));
+                br.write(l.getWorld().getName() + "," + l.getX() + "," + l.getY() + "," + l.getZ() + "|");
+                br.close();
             }catch (IOException e){
                 e.printStackTrace();
             }
         }
     }
 
-    public void boostFaith(String god, String player, int boost){
+    public void changeFaith(String god, String player, int change, boolean add){
         String path = player + ".FaithLevel";
         File f = new File("plugins/Altars/Gods/" + god + "/FaithLevels.yml");
         FileConfiguration yml = YamlConfiguration.loadConfiguration(f);
-        yml.set(path, yml.getInt(path) + boost);
+        if(add) {
+            yml.set(path, yml.getInt(path) + change);
+        }else{
+            yml.set(path, yml.getInt(path) - change);
+        }
         try {
             yml.save(f);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getPlayerGod(Player p){
+        File lightFollowers = new File("plugins/Altars/Gods/Light/Followers.txt");
+        File darkFollowers = new File("plugins/Altars/Gods/Dark/Followers.txt");
+        File endFollowers = new File("plugins/Altars/Gods/End/Followers.txt");
+
+        File[] followers = {lightFollowers, darkFollowers, endFollowers};
+        for(File f : followers){
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(f));
+                String[] players = br.readLine().split(";");
+                for(String s : players){
+                    if(s.equals(p.getName())){
+                        if(f.getPath().contains("Light")){
+                            return "Light";
+                        }else if(f.getPath().contains("Dark")){
+                            return "Dark";
+                        }else if(f.getPath().contains("End")){
+                            return "End";
+                        }
+                    }
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public boolean isAltarBlock(Location l){
+        File lightBlocks = new File("plugins/Altars/Gods/Light/Blocks.txt");
+        File darkBlocks = new File("plugins/Altars/Gods/Dark/Blocks.txt");
+        File endBlocks = new File("plugins/Altars/Gods/End/Blocks.txt");
+        File[] altars = {lightBlocks, darkBlocks, endBlocks};
+
+        for(File f : altars){
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(f));
+                String[] locs = br.readLine().split("|");
+                for(String loc : locs){
+                    String[] info = loc.split(",");
+                    World w = Bukkit.getServer().getWorld(info[0]);
+                    double x = Double.parseDouble(info[1]);
+                    double y = Double.parseDouble(info[2]);
+                    double z = Double.parseDouble(info[3]);
+                    Location fin = new Location(w, x, y, z);
+                    if(fin == l){
+                        return true;
+                    }
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return false;
     }
 
     public boolean isLightAltar(Location l){
