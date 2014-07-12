@@ -36,5 +36,14 @@ Usage
 5. Once you have enough faith your god will reward you with a random item!
 
 Sorry for poor documentation/screenshots, but this was all last second.
+
+
+----------------------------------------
+
+More info
+---------
+
+- There is a certain amount of Minecraft days that must past after receiving a gift before you receive another (Varies depending on last gift)
+
 <!-- Hi, KrazyTraynz! This is the default README for every ten.java submission. -->
 <!-- We encourage you to edit this README with some information about your submission – keep in mind you'll be scored on documentation! -->
