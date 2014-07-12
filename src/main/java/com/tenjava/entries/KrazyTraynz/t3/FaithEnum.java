@@ -16,7 +16,6 @@ public enum FaithEnum {
     CHICKEN(EntityType.CHICKEN, 3),
     HORSE(EntityType.HORSE, 8),
     COW(EntityType.COW, 6),
-    IRON_GOLEM(EntityType.IRON_GOLEM, 12),
     PIG(EntityType.PIG, 4),
     SHEEP(EntityType.SHEEP, 5);
 
@@ -32,5 +31,18 @@ public enum FaithEnum {
     FaithEnum(EntityType et, int level){
         this.et = et;
         this.level = level;
+    }
+
+    public FaithEnum getFromType(EntityType et){
+        for(FaithEnum fe : values()){
+            if(fe.et == et){
+                return fe;
+            }
+        }
+        return null;
+    }
+
+    public int getLevel(){
+        return level;
     }
 }

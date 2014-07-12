@@ -6,18 +6,16 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Carter Milch on Jul 12, 2014.
- */
 public class Utils {
 
-    List<Location> blockls = new ArrayList<Location>();
+    List<Location> blockls = new ArrayList<>();
 
     private TenJava tj;
 
@@ -141,8 +139,6 @@ public class Utils {
                         }
                     }
                 }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -179,6 +175,19 @@ public class Utils {
         }
 
         return false;
+    }
+
+    public FaithEnum getType(EntityType et){
+        for(FaithEnum fe : FaithEnum.values()){
+            return fe.getFromType(et);
+        }
+        return null;
+    }
+
+    public int getFaith(Player p){
+        File f = new File("plugins/Altars/Gods/" + getPlayerGod(p) + "/FaithLevels.yml");
+        FileConfiguration yml = YamlConfiguration.loadConfiguration(f);
+        return yml.getInt(p.getName() + ".FaithLevel");
     }
 
     public boolean isLightAltar(Location l){
