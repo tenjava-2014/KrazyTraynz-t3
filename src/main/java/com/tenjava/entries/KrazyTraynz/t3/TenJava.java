@@ -24,6 +24,8 @@ public class TenJava extends JavaPlugin {
         pb.endBook();
         pb.lightBook();
 
+        gr.gift();
+
         Bukkit.getServer().getPluginManager().registerEvents(a, this);
         Bukkit.getServer().getPluginManager().registerEvents(gl, this);
         getLogger().info("Altars has been enabled!");

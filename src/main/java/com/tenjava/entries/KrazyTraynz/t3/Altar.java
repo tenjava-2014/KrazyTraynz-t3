@@ -50,7 +50,8 @@ public class Altar implements Listener{
                             b.getWorld().strikeLightning(b.getLocation().add(0, 0.1, 0));
                             tj.u.writeFollower("Light", p.getName());
                             p.sendMessage(ChatColor.BLUE + "You have become a follower of " + tj.getConfig().getString("Gods.Light"));
-                            tj.gr.wait.put(p.getName(), System.currentTimeMillis());
+                            tj.gr.since.put(p.getName(), System.currentTimeMillis());
+                            tj.gr.time.put(p.getName(), 0L);
                         }
                     }
                 }else if(tj.u.isDarkAltar(under)){
@@ -60,7 +61,8 @@ public class Altar implements Listener{
                             b.getWorld().strikeLightning(b.getLocation().add(0, 0.1, 0));
                             tj.u.writeFollower("Dark", p.getName());
                             p.sendMessage(ChatColor.DARK_RED + "You have become a follower of " + tj.getConfig().getString("Gods.Dark.Name"));
-                            tj.gr.wait.put(p.getName(), System.currentTimeMillis());
+                            tj.gr.since.put(p.getName(), System.currentTimeMillis());
+                            tj.gr.time.put(p.getName(), 0L);
                         }
                     }
                 }else if(tj.u.isEndAltar(under)){
@@ -70,7 +72,8 @@ public class Altar implements Listener{
                             b.getWorld().strikeLightning(b.getLocation().add(0, 0.1, 0));
                             tj.u.writeFollower("End", p.getName());
                             p.sendMessage(ChatColor.LIGHT_PURPLE + "You have become a follower of " + tj.getConfig().getString("Gods.End.Name"));
-                            tj.gr.wait.put(p.getName(), System.currentTimeMillis());
+                            tj.gr.since.put(p.getName(), System.currentTimeMillis());
+                            tj.gr.time.put(p.getName(), 0L);
                         }
                     }
                 }
