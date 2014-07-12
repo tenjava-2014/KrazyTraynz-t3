@@ -2,6 +2,7 @@ package com.tenjava.entries.KrazyTraynz.t3;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+<<<<<<< HEAD
 public class TenJava extends JavaPlugin {
 
     public Utils u;
@@ -16,3 +17,6 @@ public class TenJava extends JavaPlugin {
         getLogger().warning("Altars has been disabled!");
     }
 }
+=======
+public class TenJava extends JavaPlugin {}
+>>>>>>> origin/master
