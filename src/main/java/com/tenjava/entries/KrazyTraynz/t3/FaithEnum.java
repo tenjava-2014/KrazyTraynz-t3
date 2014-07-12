@@ -8,11 +8,6 @@ import org.bukkit.entity.EntityType;
  */
 public enum FaithEnum {
 
-    COAL(Material.COAL, 3),
-    DIAMOND(Material.DIAMOND, 6),
-    EMERALD(Material.EMERALD, 6),
-    IRON_INGOT(Material.IRON_INGOT, 4),
-    GOLD_INGOT(Material.GOLD_INGOT, 5),
     CHICKEN(EntityType.CHICKEN, 3),
     HORSE(EntityType.HORSE, 8),
     COW(EntityType.COW, 6),
@@ -33,13 +28,8 @@ public enum FaithEnum {
         this.level = level;
     }
 
-    public FaithEnum getFromType(EntityType et){
-        for(FaithEnum fe : values()){
-            if(fe.et == et){
-                return fe;
-            }
-        }
-        return null;
+    public EntityType getEntity(){
+        return et;
     }
 
     public int getLevel(){

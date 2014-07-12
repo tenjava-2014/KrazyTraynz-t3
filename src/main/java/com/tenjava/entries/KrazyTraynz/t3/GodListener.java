@@ -24,6 +24,10 @@ public class GodListener implements Listener {
         this.tj = tj;
     }
 
+    /**
+     * Lowers faith of player if they attack unprovoked when worshipping light god.
+     * @param e
+     */
     @EventHandler
     public void pvpFaith(EntityDamageByEntityEvent e){
         if(e.getDamager() instanceof Player && e.getEntity() instanceof Player){
@@ -39,6 +43,10 @@ public class GodListener implements Listener {
         }
     }
 
+    /**
+     * Boosts faith of player when killing another if they worship dark god.
+     * @param e
+     */
     @EventHandler
     public void killFaith(PlayerDeathEvent e){
         if(e.getEntity().getKiller() != null){
@@ -51,39 +59,32 @@ public class GodListener implements Listener {
         }
     }
 
+    /**
+     * Boosts faith of player when sacrificing entity.
+     * @param e
+     */
     @EventHandler
     public void sacrificeFaith(PlayerInteractEntityEvent e){
         if(e.getPlayer().getItemInHand() != null && e.getRightClicked() != null){
             if(e.getPlayer().getItemInHand().hasItemMeta()){
                 ItemStack i = e.getPlayer().getItemInHand();
                 Player p = e.getPlayer();
-                if(tj.u.isAltarBlock(e.getRightClicked().getLocation().subtract(0, 1, 0))){
-                    if(Integer.parseInt(i.getItemMeta().getLore().get(0).replace("Prayers: ", "")) > 0) {
-                        String s = tj.u.getPlayerGod(e.getPlayer());
-                        e.getRightClicked().getWorld().strikeLightning(e.getRightClicked().getLocation());
-                        if (s.equals("Light")) {
-                            p.sendMessage(ChatColor.BLUE + "Your sacrifice has pleased " + tj.getConfig().getString("Gods.Light.Name"));
-                            tj.u.changeFaith("Light", p.getName(), tj.u.getType(e.getRightClicked().getType()).getLevel(), true);
-                            subPrayers(i);
-                        } else if (s.equals("Dark")) {
-                            p.sendMessage(ChatColor.DARK_RED + "Your sacrifice has pleased " + tj.getConfig().getString("Gods.Dark.Name"));
-                            tj.u.changeFaith("Dark", p.getName(), tj.u.getType(e.getRightClicked().getType()).getLevel(), true);
-                            subPrayers(i);
-                        } else if (s.equals("End")) {
-                            p.sendMessage(ChatColor.LIGHT_PURPLE + "Your sacrifice has pleased " + tj.getConfig().getString("Gods.End.Name"));
-                            tj.u.changeFaith("End", p.getName(), tj.u.getType(e.getRightClicked().getType()).getLevel(), true);
-                            subPrayers(i);
-                        }
+                if(Integer.parseInt(i.getItemMeta().getLore().get(0).replace("Prayers left: ", "")) > 0) {
+                    String s = tj.u.getPlayerGod(e.getPlayer());
+                    e.getRightClicked().getWorld().strikeLightning(e.getRightClicked().getLocation());
+                    e.getRightClicked().remove();
+                    if (s.equals("Light")) {
+                        p.sendMessage(ChatColor.BLUE + "Your sacrifice has pleased " + tj.getConfig().getString("Gods.Light.Name") + "!");
+                        tj.u.changeFaith("Light", p.getName(), tj.u.getType(e.getRightClicked().getType()).getLevel(), true);
+                    } else if (s.equals("Dark")) {
+                        p.sendMessage(ChatColor.DARK_RED + "Your sacrifice has pleased " + tj.getConfig().getString("Gods.Dark.Name") + "!");
+                        tj.u.changeFaith("Dark", p.getName(), tj.u.getType(e.getRightClicked().getType()).getLevel(), true);
+                    } else if (s.equals("End")) {
+                        p.sendMessage(ChatColor.LIGHT_PURPLE + "Your sacrifice has pleased " + tj.getConfig().getString("Gods.End.Name") + "!");
+                        tj.u.changeFaith("End", p.getName(), tj.u.getType(e.getRightClicked().getType()).getLevel(), true);
                     }
                 }
             }
         }
-    }
-
-    public void subPrayers(ItemStack i){
-        int prayers = Integer.parseInt(i.getItemMeta().getLore().get(0).replace("Prayers: ", ""));
-        prayers--;
-        List<String> lore = new ArrayList<>();
-        lore.add("Prayers: " + prayers);
     }
 }

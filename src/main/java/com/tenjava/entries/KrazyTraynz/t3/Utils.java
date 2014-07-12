@@ -4,46 +4,45 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Utils {
-
-    List<Location> blockls = new ArrayList<>();
-
     private TenJava tj;
 
     public Utils(TenJava tj){
         this.tj = tj;
     }
 
+    /**
+     * Generates files if they don't exist.
+     */
     public void genFiles(){
         File mainDir = new File("plugins/Altars/Gods");
         mainDir.mkdirs();
 
-        File lightDir = new File(mainDir + "/Light/");
+        File lightDir = new File(mainDir + "/Light");
         lightDir.mkdirs();
-        File lightFollowers = new File(lightDir + "Followers.txt");
-        File lightAltars = new File(lightDir + "Blocks.txt");
-        File lightFaith = new File(lightDir + "FaithLevels.yml");
+        File lightFollowers = new File(lightDir + "/Followers.txt");
+        File lightAltars = new File(lightDir + "/Blocks.txt");
+        File lightFaith = new File(lightDir + "/FaithLevels.yml");
 
-        File darkDir = new File(mainDir + "/Dark/");
+        File darkDir = new File(mainDir + "/Dark");
         darkDir.mkdirs();
-        File darkFollowers = new File(darkDir + "Followers.txt");
-        File darkAltars = new File(darkDir + "Blocks.txt");
-        File darkFaith = new File(darkDir + "FaithLevels.yml");
+        File darkFollowers = new File(darkDir + "/Followers.txt");
+        File darkAltars = new File(darkDir + "/Blocks.txt");
+        File darkFaith = new File(darkDir + "/FaithLevels.yml");
 
-        File endDir = new File(mainDir + "/End/");
+        File endDir = new File(mainDir + "/End");
         endDir.mkdirs();
-        File endFollowers = new File(endDir + "Followers.txt");
-        File endAltars = new File(endDir + "Blocks.txt");
-        File endFaith = new File(endDir + "FaithLevels.yml");
+        File endFollowers = new File(endDir + "/Followers.txt");
+        File endAltars = new File(endDir + "/Blocks.txt");
+        File endFaith = new File(endDir + "/FaithLevels.yml");
 
         File[] registries = {lightFollowers, lightAltars, lightFaith, darkFollowers, darkAltars, darkFaith, endFollowers, endAltars, endFaith};
         for(File f : registries){
@@ -57,6 +56,11 @@ public class Utils {
         }
     }
 
+    /**
+     * Registers player as a follower.
+     * @param god god they decide to follow
+     * @param player player to register
+     */
     public void writeFollower(String god, String player){
         File lightF = new File("plugins/Altars/Gods/Light/Followers.txt");
         File darkF = new File("plugins/Altars/Gods/Dark/Followers.txt");
@@ -89,19 +93,13 @@ public class Utils {
         }
     }
 
-    public void writeAltar(String god){
-        for(Location l : blockls){
-            File f = new File("plugins/Altars/Gods/" + god + "/Blocks.txt");
-            try{
-                BufferedWriter br = new BufferedWriter(new FileWriter(f));
-                br.write(l.getWorld().getName() + "," + l.getX() + "," + l.getY() + "," + l.getZ() + "|");
-                br.close();
-            }catch (IOException e){
-                e.printStackTrace();
-            }
-        }
-    }
-
+    /**
+     * Changes a player's amount of faith.
+     * @param god god they follow
+     * @param player player who's faith is being changed
+     * @param change amount it's being changed by
+     * @param add whether or not it's adding or subtracting
+     */
     public void changeFaith(String god, String player, int change, boolean add){
         String path = player + ".FaithLevel";
         File f = new File("plugins/Altars/Gods/" + god + "/FaithLevels.yml");
@@ -118,6 +116,11 @@ public class Utils {
         }
     }
 
+    /**
+     * Get god player is following.
+     * @param p follower
+     * @return
+     */
     public String getPlayerGod(Player p){
         File lightFollowers = new File("plugins/Altars/Gods/Light/Followers.txt");
         File darkFollowers = new File("plugins/Altars/Gods/Dark/Followers.txt");
@@ -146,6 +149,11 @@ public class Utils {
         return null;
     }
 
+    /**
+     * whether or not a block at a given location is part of an altar.
+     * @param l location of block to check
+     * @return
+     */
     public boolean isAltarBlock(Location l){
         File lightBlocks = new File("plugins/Altars/Gods/Light/Blocks.txt");
         File darkBlocks = new File("plugins/Altars/Gods/Dark/Blocks.txt");
@@ -177,148 +185,124 @@ public class Utils {
         return false;
     }
 
-    public FaithEnum getType(EntityType et){
-        for(FaithEnum fe : FaithEnum.values()){
-            return fe.getFromType(et);
-        }
-        return null;
-    }
-
+    /**
+     * Get amount of faith a player has.
+     * @param p player who's faith is being checked
+     * @return
+     */
     public int getFaith(Player p){
         File f = new File("plugins/Altars/Gods/" + getPlayerGod(p) + "/FaithLevels.yml");
         FileConfiguration yml = YamlConfiguration.loadConfiguration(f);
         return yml.getInt(p.getName() + ".FaithLevel");
     }
 
-    public boolean isLightAltar(Location l){
-        int i = 0;
-        if(l.add(1, 0 ,0).getBlock().getType() == Material.GOLD_BLOCK){
-            i++;
-            blockls.add(l.add(1, 0 ,0));
-        }
-        if(l.subtract(1, 0, 0).getBlock().getType() == Material.GOLD_BLOCK){
-            i++;
-            blockls.add(l.subtract(1, 0, 0));
-        }
-        if(l.add(0, 0, 1).getBlock().getType() == Material.GOLD_BLOCK){
-            i++;
-            blockls.add(l.add(0, 0, 1));
-        }
-        if(l.subtract(0, 0, 1).getBlock().getType() == Material.GOLD_BLOCK){
-            i++;
-            blockls.add(l.subtract(0, 0, 1));
-        }
-        if(l.add(1, 0, 1).getBlock().getType() == Material.QUARTZ_BLOCK){
-            i++;
-            blockls.add(l.add(1, 0, 1));
-        }
-        if(l.subtract(0, 0, 1).add(1, 0, 0).getBlock().getType() == Material.QUARTZ_BLOCK){
-            i++;
-            blockls.add(l.subtract(0, 0, 1).add(1, 0, 0));
-        }
-        if(l.subtract(1, 0, 1).getBlock().getType() == Material.QUARTZ_BLOCK){
-            i++;
-            blockls.add(l.subtract(1, 0, 1));
-        }
-        if(l.subtract(1, 0, 0).add(0, 0, 1).getBlock().getType() == Material.QUARTZ_BLOCK){
-            i++;
-            blockls.add(l.subtract(1, 0, 0).add(0, 0, 1));
-        }
-        if(i == 8){
-            writeAltar("Light");
-            blockls.clear();
+    /**
+     * Whether or not blocks around a location are part of a light altar.
+     * @param b location to check around
+     * @return
+     */
+    public boolean isLightAltar(Block b){
+        if(checkPrimaryBlocks(b.getLocation(), Material.GOLD_BLOCK) + checkSecondaryBlocks(b.getLocation()) == 8){
             return true;
         }else {
-            blockls.clear();
             return false;
         }
     }
 
-    public boolean isDarkAltar(Location l){
-        int i = 0;
-        if(l.add(1, 0 ,0).getBlock().getType() == Material.OBSIDIAN){
-            i++;
-            blockls.add(l.add(1, 0 ,0));
-        }
-        if(l.subtract(1, 0, 0).getBlock().getType() == Material.OBSIDIAN){
-            i++;
-            blockls.add(l.subtract(1, 0, 0));
-        }
-        if(l.add(0, 0, 1).getBlock().getType() == Material.OBSIDIAN){
-            i++;
-            blockls.add(l.add(0, 0, 1));
-        }
-        if(l.subtract(0, 0, 1).getBlock().getType() == Material.OBSIDIAN){
-            i++;
-            blockls.add(l.subtract(0, 0, 1));
-        }
-        if(l.add(1, 0, 1).getBlock().getType() == Material.QUARTZ_BLOCK){
-            i++;
-            blockls.add(l.add(1, 0, 1));
-        }
-        if(l.subtract(0, 0, 1).add(1, 0, 0).getBlock().getType() == Material.QUARTZ_BLOCK){
-            i++;
-            blockls.add(l.subtract(0, 0, 1).add(1, 0, 0));
-        }
-        if(l.subtract(1, 0, 1).getBlock().getType() == Material.QUARTZ_BLOCK){
-            i++;
-            blockls.add(l.subtract(1, 0, 1));
-        }
-        if(l.subtract(1, 0, 0).add(0, 0, 1).getBlock().getType() == Material.QUARTZ_BLOCK){
-            i++;
-            blockls.add(l.subtract(1, 0, 0).add(0, 0, 1));
-        }
-        if(i == 8){
-            writeAltar("Dark");
-            blockls.clear();
+    /**
+     * Whether or not blocks around a location are part of a dark altar.
+     * @param b Block with location to check around
+     * @return
+     */
+    public boolean isDarkAltar(Block b){
+        if(checkPrimaryBlocks(b.getLocation(), Material.OBSIDIAN) + checkSecondaryBlocks(b.getLocation()) == 8){
             return true;
         }else {
-            blockls.clear();
             return false;
         }
     }
 
-    public boolean isEndAltar(Location l){
-        int i = 0;
-        if(l.add(1, 0 ,0).getBlock().getType() == Material.ENDER_STONE){
-            i++;
-            blockls.add(l.add(1, 0 ,0));
-        }
-        if(l.subtract(1, 0, 0).getBlock().getType() == Material.ENDER_STONE){
-            i++;
-            blockls.add(l.subtract(1, 0, 0));
-        }
-        if(l.add(0, 0, 1).getBlock().getType() == Material.ENDER_STONE){
-            i++;
-            blockls.add(l.add(0, 0, 1));
-        }
-        if(l.subtract(0, 0, 1).getBlock().getType() == Material.ENDER_STONE){
-            i++;
-            blockls.add(l.subtract(0, 0, 1));
-        }
-        if(l.add(1, 0, 1).getBlock().getType() == Material.QUARTZ_BLOCK){
-            i++;
-            blockls.add(l.add(1, 0, 1));
-        }
-        if(l.subtract(0, 0, 1).add(1, 0, 0).getBlock().getType() == Material.QUARTZ_BLOCK){
-            i++;
-            blockls.add(l.subtract(0, 0, 1).add(1, 0, 0));
-        }
-        if(l.subtract(1, 0, 1).getBlock().getType() == Material.QUARTZ_BLOCK){
-            i++;
-            blockls.add(l.subtract(1, 0, 1));
-        }
-        if(l.subtract(1, 0, 0).add(0, 0, 1).getBlock().getType() == Material.QUARTZ_BLOCK){
-            i++;
-            blockls.add(l.subtract(1, 0, 0).add(0, 0, 1));
-        }
-        if(i == 8){
-            writeAltar("End");
-            blockls.clear();
+    /**
+     * Whether or not blocks around a location are part of an end altar.
+     * @param b Block with location to check around
+     * @return
+     */
+    public boolean isEndAltar(Block b){
+        if(checkPrimaryBlocks(b.getLocation(), Material.ENDER_STONE) + checkSecondaryBlocks(b.getLocation()) == 8){
             return true;
         }else {
-            blockls.clear();
             return false;
         }
+    }
+
+    /**
+     * Checks for blocks unique to altar around a location.
+     * @param l location to check around
+     * @param m material to check for
+     * @return
+     */
+    public int checkPrimaryBlocks(Location l, Material m){
+        int i = 0;
+        l.subtract(0, 1, 0);
+        Location p1 = l.add(1, 0, 0);
+        Location p2 = l.subtract(2, 0, 0);
+        Location p3 = l.add(1, 0, 1);
+        Location p4 = l.subtract(0, 0, 2);
+
+        if(p1.getBlock().getType() == m){
+            i++;
+        }
+        if(p2.getBlock().getType() == m){
+            i++;
+        }
+        if(p3.getBlock().getType() == m){
+            i++;
+        }
+        if(p4.getBlock().getType() == m){
+            i++;
+        }
+        return i;
+    }
+
+    /**
+     * Checks for quartz around a location.
+     * @param l location to check around
+     * @return
+     */
+    public int checkSecondaryBlocks(Location l){
+        int i = 0;
+        l.subtract(0, 1, 0);
+        Location s1 = l.add(-1, 0, 1);
+        Location s2 = l.subtract(-2, 0, 2);
+        Location s3 = l.add(-2, 0, 0);
+        Location s4 = l.add(2, 0, 2);
+
+        if(s1.getBlock().getType() == Material.QUARTZ_BLOCK){
+            i++;
+        }
+        if(s2.getBlock().getType() == Material.QUARTZ_BLOCK) {
+            i++;
+        }
+        if(s3.getBlock().getType() == Material.QUARTZ_BLOCK){
+            i++;
+        }
+        if(s4.getBlock().getType() == Material.QUARTZ_BLOCK){
+            i++;
+        }
+        return i;
+    }
+
+    /**
+     * Gets FaithEnum matching given EntityType.
+     * @param e EntityType to check for
+     * @return
+     */
+    public FaithEnum getType(EntityType e){
+        for(FaithEnum fe : FaithEnum.values()){
+            if(fe.getEntity() == e){
+                return fe;
+            }
+        }
+        return null;
     }
 }

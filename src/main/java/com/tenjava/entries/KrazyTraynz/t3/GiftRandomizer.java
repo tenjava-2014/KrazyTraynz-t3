@@ -21,10 +21,19 @@ public class GiftRandomizer {
         this.tj = tj;
     }
 
+    /**
+     * Converts ticks to seconds.
+     * @param i ticks to convert
+     * @return amount of seconds
+     */
     public long secFromTick(long i){
         return i*20;
     }
 
+
+    /**
+     * Gives a player a random gift with the value closest to the random value reached with their current faith.
+     */
     public void gift(){
         final Random r = new Random();
         tj.getServer().getScheduler().scheduleSyncDelayedTask(tj, new Runnable(){

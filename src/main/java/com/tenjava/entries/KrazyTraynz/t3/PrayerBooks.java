@@ -7,9 +7,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by Carter Milch on Jul 12, 2014.
  */
@@ -20,13 +17,13 @@ public class PrayerBooks {
         this.tj = tj;
     }
 
+    /**
+     * Recipe for Light god book.
+     */
     public void lightBook(){
         ItemStack i = new ItemStack(Material.BOOK);
         ItemMeta meta = i.getItemMeta();
         meta.setDisplayName(ChatColor.BLUE + "Book of " + tj.getConfig().getString("Gods.Light.Name"));
-        List<String> lore = new ArrayList<>();
-        lore.add("Prayers left: 10");
-        meta.setLore(lore);
         i.setItemMeta(meta);
 
         ShapedRecipe sr = new ShapedRecipe(i);
@@ -37,13 +34,13 @@ public class PrayerBooks {
         Bukkit.getServer().addRecipe(sr);
     }
 
+    /**
+     * Recipe for Dark god book.
+     */
     public void darkBook(){
         ItemStack i = new ItemStack(Material.BOOK);
         ItemMeta meta = i.getItemMeta();
         meta.setDisplayName(ChatColor.DARK_RED + "Book of " + tj.getConfig().getString("Gods.Dark.Name"));
-        List<String> lore = new ArrayList<>();
-        lore.add("Prayers left: 10");
-        meta.setLore(lore);
         i.setItemMeta(meta);
 
         ShapedRecipe sr = new ShapedRecipe(i);
@@ -54,13 +51,13 @@ public class PrayerBooks {
         Bukkit.getServer().addRecipe(sr);
     }
 
+    /**
+     * Recipe for End god book.
+     */
     public void endBook(){
         ItemStack i = new ItemStack(Material.BOOK);
         ItemMeta meta = i.getItemMeta();
         meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Book of " + tj.getConfig().getString("Gods.End.Name"));
-        List<String> lore = new ArrayList<>();
-        lore.add("Prayers left: 10");
-        meta.setLore(lore);
         i.setItemMeta(meta);
 
         ShapedRecipe sr = new ShapedRecipe(i);
